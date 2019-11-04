@@ -1,10 +1,10 @@
-from randomAI import manage_ai_input
-from connect4 import Connect4
+from .randomAI import manage_ai_input
+from .connect4 import Connect4
 import time
 
 # play the random ai against another random ai and print the board after each move
 
-# do this 10 times and recond the number of times blue won and the number of times red 1
+# do this 10 times and record the number of times blue won and the number of times red won
 NUM_TRIALS = 100
 
 # define the AIs and the number of total wins
@@ -16,11 +16,10 @@ num_ties = 0
 
 
 
-i = 0
 
 
 current_time = time.time()
-
+i = 0
 while i < NUM_TRIALS:
 
 

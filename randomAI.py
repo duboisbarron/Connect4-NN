@@ -1,4 +1,4 @@
-from connect4 import Connect4
+from .connect4 import Connect4
 import random
 
 def manage_human_input(c):

@@ -78,7 +78,6 @@ class Connect4:
         # only print_board is what really matters to a human
         # if everything else works it's much more memory efficient - wider loops
 
-
         col_to_drop_in = self.board[col]
         col_to_drop_in.reverse()
         index = 0
@@ -108,11 +107,6 @@ class Connect4:
     # return True if column col is full, False otherwise
     # list.index(el) throws ValueError if el not in list
     def is_column_full(self, col):
-        # print('calling is_column full')
-        # print(col)
-        # print(col)
-        # print(col)
-        # print(col)
         try:
             x = self.board[col].index(None)
         except ValueError:
@@ -143,10 +137,92 @@ class Connect4:
                 except IndexError as e:
                     return False
 
+    '''
+    Checks a list for 4 of the same thing in a row 
+    '''
+    def check_list_for_win(self, lst):
+
+        if len(lst) < 4:
+            return False
+        else:
+            is_winner = False
+            for index, chip in enumerate(lst):
+                if index + 3 == len(lst):
+                    break
+                if lst[index] == lst[index+1] == lst[index+2] == lst[index+3]:
+                    is_winner = True
+                    break
+
+            return is_winner
+
+    '''
+    From a given chip position 
+    Go left and up pre-pending chips
+    then go right and down appending chips
+    '''
+    def win_diagonal_backward_slash(self, row, col):
+
+        print(self.get_chip(row, col))
+        the_list_of_seven = [self.get_chip(row, col)]
+
+        # do 3 times if possible
+        # go up and left 3 times
+        # PREPEND THESE CHIPS
+        for x in range(3):
+            next_index = (row - x - 1, col - x - 1)
+            # print(next_index)
+            # see if getting the chip is possible
+            if next_index[0] >= 0 and next_index[1] >= 0:
+                the_list_of_seven.insert(0, self.get_chip(next_index[0], next_index[1]))
+
+        # do this 3 times if possible
+        # go down and to the right 3 times
+        # APPEND THESE CHIPS
+        for x in range(3):
+            next_index = (row + x + 1, col + x + 1)
+            # print(next_index)
+            if next_index[0] < self.rows and next_index[1] < self.columns:
+                # print(next_index)
+                the_list_of_seven.append(self.get_chip(next_index[0], next_index[1]))
+
+        # print(self.check_list_for_win(the_list_of_seven))
+        return self.check_list_for_win(the_list_of_seven)
+
+    '''
+    From a given chip position 
+    Go left and down pre-pending chips
+    then go right and up appending chips
+    '''
+    def win_diagonal_forward_slash(self, row, col):
+
+        the_list_of_seven = [self.get_chip(row, col)]
+
+        # prepend 3 chips
+        for x in range(3):
+            next_index = (row+x+1, col-x-1)
+            # see if getting the chip is possible
+            if next_index[0] < self.rows and next_index[1] >= 0:
+                the_list_of_seven.insert(0, self.get_chip(next_index[0], next_index[1]))
+
+        # append 3 chips
+        for x in range(3):
+            next_index = (row-x-1, col+x+1)
+            # see if getting the chip is possible
+            if next_index[0] >= 0 and next_index[1] < self.columns:
+                the_list_of_seven.append(self.get_chip(next_index[0], next_index[1]))
+
+        return self.check_list_for_win(the_list_of_seven)
+
+    '''
+    Overall check for win condition
+    Whenever a chip is dropped, immediately check if it has won the game
+    If we check whenever a chip is dropped - more efficient
+    '''
     def check_win_conditions(self, row, col, chip):
-        return self.win_horizontal(row, chip) or self.win_down(row, col)
-               #  or
-               # self.win_horizontal(row)
+        return self.win_horizontal(row, chip) or \
+               self.win_down(row, col) or \
+               self.win_diagonal_forward_slash(row, col)
+
 
     # return the list of diagonal values going bottom left to top right
     # given a chip position (row, col)
@@ -163,6 +239,51 @@ class Connect4:
                 arr.append(self.get_chip(row-1, x+1))
                 # print(arr)
             return arr
+
+
+
+def test_diagonal_backwards():
+    c1 = Connect4()
+    c1.drop_chip(6)
+    c1.drop_chip(5)
+    c1.drop_chip(5)
+    c1.drop_chip(4)
+    c1.drop_chip(4)
+    c1.drop_chip(3)
+    c1.drop_chip(4)
+    c1.drop_chip(3)
+    c1.drop_chip(3)
+    c1.drop_chip(0)
+    c1.drop_chip(3)
+
+    c1.print_board()
+    print(c1.win_diagonal_backward_slash(row=2, col=3))
+
+
+
+def test_diagonal_forward():
+
+    c1 = Connect4()
+    c1.drop_chip(0)
+    c1.drop_chip(1)
+    c1.drop_chip(1)
+    c1.drop_chip(2)
+    c1.drop_chip(2)
+    c1.drop_chip(6)
+    c1.drop_chip(2)
+    c1.drop_chip(3)
+    c1.drop_chip(3)
+    c1.drop_chip(3)
+    c1.drop_chip(3)
+    if c1.turn in ['R', 'B']:
+        raise Exception
+    print(c1.turn)
+    c1.print_board()
+
+if __name__ == '__main__':
+    # test_diagonal_forward()
+    test_diagonal_backwards()
+
 
 
 

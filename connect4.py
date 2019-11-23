@@ -12,10 +12,18 @@ JUST HAVE EMPTY LISTS THAT WE
 class Connect4:
     rows = 6
     columns = 7
+    last_move = None
 
-    def __init__(self):
-        self.board = self.new_board()
-        self.turn = "B" if randint(0, 1) == 1 else "R"
+    def __init__(self, board=None, turn=None):
+        if board is None and turn is None:
+            self.board = self.new_board()
+            self.turn = "B" if randint(0, 1) else "R"
+        else:
+            self.board = board
+            self.turn = turn
+
+    def __deepcopy__(self, memodict={}):
+        return Connect4(self.board, self.turn)
 
     def make_column(self):
         return [None for i in range(self.rows)]
@@ -91,6 +99,8 @@ class Connect4:
         # print(self.rows - index - 1, col)
         self.board[col] = col_to_drop_in
 
+        # print(f"chip went into position: {self.rows-index-1, col}")
+        self.last_move = ((self.rows - index - 1), col)
         if self.check_win_conditions(self.rows - index - 1, col, self.turn):
             # print("GAME OVER")
             self.turn = self.turn + "_WINS"
@@ -99,7 +109,10 @@ class Connect4:
             self.turn = "TIE"
         else:
             self.flip_turn()
-    #         check win condition
+
+        return self.rows - index -1 , col
+
+
 
     def prCyan(self, skk):
         print("\033[96m {}\033[00m".format(skk))
@@ -115,7 +128,8 @@ class Connect4:
 
     # return array of booleans indicating if you can make a move in given column
     def available_moves(self):
-        return [not self.is_column_full(col) for col in range(self.columns)]
+        moves = [col for col in range(self.columns) if not self.is_column_full(col)]
+        return moves
 
     def win_down(self, row, col):
 
@@ -127,15 +141,61 @@ class Connect4:
 
         return False
 
-    def win_horizontal(self, row, turns):
+    def get_up_to_7_vertical(self, row, col):
 
-        for i, chip in enumerate(self.get_row(row)):
-            if chip == turns:
-                try:
-                    if self.get_chip(row, i) == self.get_chip(row, i+1) == self.get_chip(row, i+2) == self.get_chip(row, i+3):
-                        return True
-                except IndexError as e:
-                    return False
+        the_list_of_seven = [self.get_chip(row, col)]
+
+        # do 3 times if possible
+        # go LEFT 3 times
+        # PREPEND THESE CHIPS
+        for x in range(3):
+            next_index = (row - x - 1, col)
+            # print(next_index)
+            # see if getting the chip is possible
+            if next_index[0] >= 0:
+                the_list_of_seven.insert(0, self.get_chip(next_index[0], next_index[1]))
+
+        for x in range(3):
+            next_index = (row + x + 1, col)
+            # print(next_index)
+            # see if getting the chip is possible
+            if next_index[0] < self.rows:
+                the_list_of_seven.append(self.get_chip(next_index[0], next_index[1]))
+
+        return the_list_of_seven
+
+    def get_up_to_7_horizontal(self, row, col):
+        the_list_of_seven = [self.get_chip(row, col)]
+
+        # do 3 times if possible
+        # go LEFT 3 times
+        # PREPEND THESE CHIPS
+        for x in range(3):
+            next_index = (row, col - x - 1)
+            # print(next_index)
+            # see if getting the chip is possible
+            if next_index[1] >= 0:
+                the_list_of_seven.insert(0, self.get_chip(next_index[0], next_index[1]))
+
+        for x in range(3):
+            next_index = (row, col + x + 1)
+            # print(next_index)
+            # see if getting the chip is possible
+            if next_index[1] < self.columns:
+                the_list_of_seven.append(self.get_chip(next_index[0], next_index[1]))
+
+        return the_list_of_seven
+
+
+    # def win_horizontal(self, row, turns):
+    #
+    #     for i, chip in enumerate(self.get_row(row)):
+    #         if chip == turns:
+    #             try:
+    #                 if self.get_chip(row, i) == self.get_chip(row, i+1) == self.get_chip(row, i+2) == self.get_chip(row, i+3):
+    #                     return True
+    #             except IndexError as e:
+    #                 return False
 
     '''
     Checks a list for 4 of the same thing in a row 
@@ -162,7 +222,7 @@ class Connect4:
     '''
     def win_diagonal_backward_slash(self, row, col):
 
-        print(self.get_chip(row, col))
+        # print(self.get_chip(row, col))
         the_list_of_seven = [self.get_chip(row, col)]
 
         # do 3 times if possible
@@ -186,7 +246,7 @@ class Connect4:
                 the_list_of_seven.append(self.get_chip(next_index[0], next_index[1]))
 
         # print(self.check_list_for_win(the_list_of_seven))
-        return self.check_list_for_win(the_list_of_seven)
+        return the_list_of_seven
 
     '''
     From a given chip position 
@@ -211,7 +271,7 @@ class Connect4:
             if next_index[0] >= 0 and next_index[1] < self.columns:
                 the_list_of_seven.append(self.get_chip(next_index[0], next_index[1]))
 
-        return self.check_list_for_win(the_list_of_seven)
+        return the_list_of_seven
 
     '''
     Overall check for win condition
@@ -219,26 +279,12 @@ class Connect4:
     If we check whenever a chip is dropped - more efficient
     '''
     def check_win_conditions(self, row, col, chip):
-        return self.win_horizontal(row, chip) or \
+        return self.check_list_for_win(self.get_up_to_7_horizontal(row, col)) or \
                self.win_down(row, col) or \
-               self.win_diagonal_forward_slash(row, col)
+               self.check_list_for_win(self.win_diagonal_forward_slash(row, col)) or \
+               self.check_list_for_win(self.win_diagonal_backward_slash(row, col))
 
 
-    # return the list of diagonal values going bottom left to top right
-    # given a chip position (row, col)
-    # (0, 6) should return (0, 6), (1, 5), (2, 4), (3, 3), (4, 2), (5, 1), (6, 0)
-    def get_forward_diag(self, row, col):
-
-        if row == 5 and col == 0:
-            print("sdf")
-            arr = [self.get_chip(row, col)]
-            for x in range(self.columns-1):
-                # row-1 and col + 1
-                chip_to_append = self.get_chip(row-1,x)
-                print(chip_to_append)
-                arr.append(self.get_chip(row-1, x+1))
-                # print(arr)
-            return arr
 
 
 
@@ -258,6 +304,7 @@ def test_diagonal_backwards():
 
     c1.print_board()
     print(c1.win_diagonal_backward_slash(row=2, col=3))
+    print(c1.check)
 
 
 
@@ -283,6 +330,8 @@ def test_diagonal_forward():
 if __name__ == '__main__':
     # test_diagonal_forward()
     test_diagonal_backwards()
+    test_diagonal_forward()
+    print('finished testing')
 
 
 

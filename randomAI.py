@@ -1,4 +1,4 @@
-from .connect4 import Connect4
+from connect4 import Connect4
 import random
 
 def manage_human_input(c):
@@ -23,20 +23,18 @@ def manage_ai_input(c):
     # an array of boolean values: [true, true, false....
 
     # randomly pick a number within the number of columns
-    rand1 = random.randint(0, c.columns-1)
-    while not valid_moves[rand1]:
-        rand1 = random.randint(0, c.columns-1)
+    rand1 = random.randint(0, len(valid_moves)-1)
 
     # randomly pick one
 
 
     # drop the chip in that column
-    c.drop_chip(rand1)
+    c.drop_chip(valid_moves[rand1])
     # print the board
     # c.print_board()
 
-def runPVP():
-    x = input("would you like to play a game? yes or no\n")
+def runPVE():
+    x = input("would you like to play a game against our random ai? yes or no\n")
     if x == 'yes':
         print("playing game")
 
@@ -50,6 +48,7 @@ def runPVP():
 
             if c.turn == human:
                 # if it is the humans turn: manage the humans input
+                # TODO: bug here
                 if not manage_human_input(c): continue
 
             else:
@@ -61,4 +60,4 @@ def runPVP():
 
 
 if __name__ == "__main__":
-    runPVP()
+    runPVE()

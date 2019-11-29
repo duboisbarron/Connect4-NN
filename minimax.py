@@ -18,8 +18,36 @@ twoinarowconditions = [
     [None, None, 'B', 'B'],
 ]
 
+'''
+Scores the entire board
+'''
+def score_entire_board(game):
+
+    red_twos_that_can_win = 0
+    blue_twos_that_can_win = 0
+
+    for row in range(game.rows):
+        for col in range(game.columns):
+
+            if game.get_chip(row, col) is None:
+                continue
+            elif game.get_chip(row, col) == 'B':
+                # print('adding to blues score')
+                blue_twos_that_can_win += count_2s_that_can_win(game, (row, col))
+            else:
+                # print('adding to reds score')
+                red_twos_that_can_win += count_2s_that_can_win(game, (row, col))
+
+    return red_twos_that_can_win - blue_twos_that_can_win
 
 
+    ''' what do we want to do here? return blue - red ? '''
+
+
+'''
+Currently scoring the past move 
+
+'''
 def count_2s_that_can_win(game, lastMove):
     row = lastMove[0]
     column = lastMove[1]
@@ -57,26 +85,29 @@ def count_2s_that_can_win(game, lastMove):
 
 def score_board(game):
     # game.print_board()
-    print(game.last_move)
+    # print(game.last_move)
     if game.turn == 'B_WINS':
-        print("HOLY FUCK WE GONNA LOSE")
+        # print("HOLY FUCK WE GONNA LOSE")
         return -999999999
     elif game.turn == 'R_WINS':
+        'FOUND WIN CONDITION'
         return 999999999
-    elif game.turn == 'R':
-        return count_2s_that_can_win(game, game.last_move)
     else:
-        return -1 * count_2s_that_can_win(game, game.last_move)
+        return score_entire_board(game)
+    # elif game.turn == 'R':
+    #     return count_2s_that_can_win(game, game.last_move)
+    # else:
+    #     return -1 * count_2s_that_can_win(game, game.last_move)
 
 def minimax(game, depth, maximizingPlayer):
     # print('calling minimax')
     if depth == 0 or game.turn == 'B_WINS' or game.turn == 'R_WINS':
-        print('calling score board')
+        # print('calling score board')
 #         return the heruristic value of board
         return None, score_board(game)
 
     if maximizingPlayer:
-        print('maximizing')
+        # print('maximizing')
         value = -999999999
         best_move = 0
         for valid_move in game.available_moves():
@@ -122,36 +153,20 @@ def manage_input(c):
         return False
 
 
-def manage_minimax_input(game):
+def manage_minimax_input(game, minimaxDepth):
     '''
         if the AI moves first, just go in the middle
     '''
     if game.board == game.new_board():
-        print("AI IS GOING FIRST")
+        # print("AI IS GOING FIRST")
         game.drop_chip(4)
-        game.print_board()
+        # game.print_board()
     else:
-        '''
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        
-        '''
-        best_move, value = minimax(game, 4, True)
-        print(best_move, value)
+
+        best_move, value = minimax(game, minimaxDepth, True)
+        # print(best_move, value)
         game.drop_chip(best_move)
-        game.print_board()
+        # game.print_board()
 
     # best_move = minimax(game, 2, True, None)
     # print(best_move)
@@ -176,7 +191,7 @@ def runPVE():
 
             else:
                 #         manage the ai's input
-                manage_minimax_input(c)
+                manage_minimax_input(c, 5)
 
         print("GAME IS OVER")
         print(c.turn)
@@ -185,6 +200,16 @@ def runPVE():
 if __name__ == "__main__":
     runPVE()
     # c1 = Connect4()
+    #
+    # c1.drop_chip(0)
+    # c1.drop_chip(5)
+    # c1.drop_chip(0)
+    #
+    # c1.drop_chip(5)
+    #
+    # print(score_entire_board(c1))
+
+
     # c1.turn = 'B'
     # c1.drop_chip(6)
     # c1.drop_chip(5)

@@ -12,8 +12,6 @@ threeinarowconditions = [
     ['B', None, 'B', 'B'],
     [None, 'B', 'B', 'B']
 
-
-
 ]
 twoinarowconditions = [
 
@@ -58,9 +56,9 @@ def score_entire_board(game, player):
 
 
     if player == 'R':
-        return 100 * (red_threes_that_can_win - blue_threes_that_can_win) + 1 * (red_twos_that_can_win - blue_twos_that_can_win)
+        return 10 * (red_threes_that_can_win - blue_threes_that_can_win) + 1 * (red_twos_that_can_win - blue_twos_that_can_win)
     else:
-        return 100*(blue_threes_that_can_win - red_threes_that_can_win) + 1*(blue_twos_that_can_win - red_twos_that_can_win)
+        return 10*(blue_threes_that_can_win - red_threes_that_can_win) + 1*(blue_twos_that_can_win - red_twos_that_can_win)
 
 
 def count_3s_that_can_win(game, lastMove):
@@ -274,7 +272,7 @@ def manage_minimax_input(game):
         HERE
         
         '''
-        best_move, value = minimax(game, 2, True)
+        best_move, value = minimax(game, 4, True)
         print('best move is : ' + str((best_move, value)))
         game.drop_chip(best_move)
         game.print_board()
@@ -283,7 +281,7 @@ def manage_minimax_input(game):
     # print(best_move)
 
 def runPVE():
-    x = input("would you like to play a game against our random ai? yes or no\n")
+    x = input("would you like to play a game against our minimax ai? yes or no\n")
     if x == 'yes':
         print("playing game")
 

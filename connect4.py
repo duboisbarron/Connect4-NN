@@ -12,10 +12,14 @@ JUST HAVE EMPTY LISTS THAT WE
 class Connect4:
     rows = 6
     columns = 7
-    last_move = None
+    most_recent_move = None
+    turn = None
 
-    def __init__(self, board=None, turn=None):
-        if board is None and turn is None:
+
+    def __init__(self, board=None, turn=None, last_move=None):
+
+        if board is None and turn is None and last_move is None:
+            self.last_move = last_move
             self.board = self.new_board()
             self.turn = "B" if randint(0, 1) else "R"
         else:
@@ -40,6 +44,37 @@ class Connect4:
     def get_chip(self, row, col):
         return self.board[col][row]
 
+    def new_print_board(self):
+        from termcolor import colored, cprint
+        # print('Hello There welcome to the board printing function')
+
+        # cprint('Hello, World!', 'green', 'on_red', end='')
+
+        board = self.board
+
+        # print(chr(175) + chr(175) + chr(175) + chr(175) + chr(175) + chr(175) + chr(175) + chr(175))
+        for i in range(len(board[0])):
+            print('|', end='')
+            # row_string = "|"
+            for j in range(len(board)):
+                if board[j][i] is None:
+                    # print('FOUND A  NULL')
+                    print(' |', end='')
+                    # row_string += " |"
+                else:
+                    # print(board[j][i])
+                    # print blue chip
+                    chip = board[j][i]
+                    cprint(board[j][i], 'grey', 'on_blue' if chip == 'B' else 'on_red', end='')
+                    print('|', end='')
+
+            print()
+            # row_string += board[j][i] + "|"
+            # print(row_string)
+
+            # self.prCyan(row_string)
+        print(' 0 1 2 3 4 5 6')
+        # print('Goodbye from the board printing function')
 
     def print_board(self):
         board = self.board
@@ -52,7 +87,9 @@ class Connect4:
                     row_string += " |"
                 else:
                     row_string += board[j][i] + "|"
-            self.prCyan(row_string)
+            print(row_string)
+            # self.prCyan(row_string)
+        print(' 0 1 2 3 4 5 6')
 
         # print(chr(175) + chr(175) + chr(175) + chr(175) + chr(175) + chr(175) + chr(175) + chr(175))
 
@@ -110,7 +147,8 @@ class Connect4:
         else:
             self.flip_turn()
 
-        return self.rows - index -1 , col
+        self.most_recent_move = col
+        return self.rows - index -1, col
 
 
 
@@ -126,8 +164,11 @@ class Connect4:
             x = -1
         return x == -1
 
-    # return array of booleans indicating if you can make a move in given column
     def available_moves(self):
+        """
+
+        :return: returns the list of valid column indices one may drop a chip into
+        """
         moves = [col for col in range(self.columns) if not self.is_column_full(col)]
         return moves
 

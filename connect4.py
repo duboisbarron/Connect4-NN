@@ -14,6 +14,7 @@ class Connect4:
     columns = 7
     most_recent_move = None
     turn = None
+    total_moves = 0
 
 
     def __init__(self, board=None, turn=None, last_move=None):
@@ -96,15 +97,20 @@ class Connect4:
 
 
     def is_tie_condition(self):
+        # print('calling is tie')
         # everything will be true
         # if total length of all the arrays is 7*6 then it's a tie
-            x = True
-            for col in range(self.columns-1):
-                # print(col)
-                if not self.is_column_full(col):
-                    x = False
-
-            return x
+        if self.total_moves == 44:
+            return True
+        return False
+        # x = True
+        # for col in range(self.columns-1):
+        #     # print(col)
+        #     if not self.is_column_full(col):
+        #         x = False
+        #         break
+        #
+        # return x
 
             # check if every single column is full... do this after you check for win conditions since the checks happen within drop_chip
 
@@ -117,6 +123,7 @@ class Connect4:
 
 
     def drop_chip(self, col):
+        self.total_moves += 1
 
         # instead of having an array of values preset...
         # just have a list that you append to in drop_chip
@@ -148,6 +155,7 @@ class Connect4:
             self.flip_turn()
 
         self.most_recent_move = col
+        # self.total_moves += 1
         return self.rows - index -1, col
 
 
@@ -320,10 +328,14 @@ class Connect4:
     If we check whenever a chip is dropped - more efficient
     '''
     def check_win_conditions(self, row, col, chip):
-        return self.check_list_for_win(self.get_up_to_7_horizontal(row, col)) or \
+        is_win = self.check_list_for_win(self.get_up_to_7_horizontal(row, col)) or \
                self.win_down(row, col) or \
                self.check_list_for_win(self.win_diagonal_forward_slash(row, col)) or \
                self.check_list_for_win(self.win_diagonal_backward_slash(row, col))
+        #
+        # if is_win:
+        #     print("GAME OVER")
+        return is_win
 
 
 

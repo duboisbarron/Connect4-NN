@@ -30,7 +30,7 @@ def human_vs_ai():
 def ai_vs_ai():
     stop_conditions = ['B_WINS', 'R_WINS', 'TIE']
     game = Connect4()
-    mm_player_red = Minimax(5, heuristic1, 'R')
+    mm_player_red = Minimax(3, heuristic1, 'R')
     mm_player_blue = Minimax(3, heuristic1, 'B')
 
     while game.turn != "B_WINS" and game.turn != "R_WINS" and game.turn != "TIE":

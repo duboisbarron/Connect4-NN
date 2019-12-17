@@ -1,4 +1,6 @@
 # packages for
+import numpy as np
+from time import time
 from colorama import Fore, Back, Style, init
 from random import randint
 init()
@@ -22,9 +24,16 @@ class Connect4:
             self.last_move = last_move
             self.board = self.new_board()
             self.turn = "B" if randint(0, 1) else "R"
+            #for saving each round
+            self.round = 0
         else:
             self.board = board
             self.turn = turn
+
+        #creating file name for each game 
+        self.filename = ('./saved_games/' 
+        + (str(time()))
+        + '.npy')
 
     def __deepcopy__(self, memodict={}):
         return Connect4(self.board, self.turn)
@@ -34,6 +43,12 @@ class Connect4:
 
     def new_board(self):
         return [self.make_column() for i in range(self.columns)]
+    
+    def get_board(self):
+        return self.board
+    
+    def get_turn(self):
+        return self.turn 
 
     def get_col(self, col):
         return self.board[col]
@@ -146,6 +161,23 @@ class Connect4:
             self.turn = "TIE"
         else:
             self.flip_turn()
+
+        #saving the states of each game 
+        state = np.array(np.transpose(self.board))
+        if self.round == 0: 
+            current_board = np.zeros((42,6,7))
+        else:
+            current_board = np.load(self.filename)
+
+        for row in range(6):
+           for col in range(7):
+            if state[row][col] == "B":
+                current_board[self.round][row][col] = 1
+            elif state[row][col] == "R":
+                current_board[self.round][row][col] = -1
+        np.save(self.filename, current_board)
+        self.round += 1
+        #end of saving states
 
         self.most_recent_move = col
         return self.rows - index -1, col

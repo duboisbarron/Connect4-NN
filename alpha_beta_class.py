@@ -6,11 +6,14 @@ from heuristics_final import heuristic5
 class AlphaBeta:
     maxdepth = 0
     heuristic_function = None
-    # player_chip = None
+    player_chip = None
 
-    def __init__(self, maxdepth, heuristic_function):
+    def __init__(self, maxdepth, heuristic_function, player_chip):
         self.maxdepth = maxdepth
         self.heuristic_function = heuristic_function
+        self.player_chip = player_chip
+        self.win_string = self.player_chip + '_WINS'
+        self.lose_string = 'B_WINS' if self.player_chip == 'R' else 'R_WINS'
 
     def findMove(self, board):
         score, move = self.alpha_beta(self.maxdepth, -math.inf, math.inf, True, board)
@@ -19,8 +22,8 @@ class AlphaBeta:
 
     def score_board(self, game):
         tie = 'TIE'
-        loss = 'B_WINS'
-        win = 'R_WINS'
+        loss = self.lose_string
+        win = self.win_string
 
         if game.turn == tie:
             return 0
@@ -30,7 +33,7 @@ class AlphaBeta:
             return math.inf
         else:
             # print('need to actually score the board')
-            return heuristic5(game, 'R')
+            return heuristic5(game, self.player_chip)
 
     def alpha_beta(self, depth, alpha, beta, maximizing_player, game):
         '''
@@ -105,13 +108,13 @@ class AlphaBeta:
 def main():
 
     game = Connect4()
-    ab_instance = AlphaBeta(4, heuristic5)
+    ab_instance = AlphaBeta(4, heuristic5, 'B')
 
     while game.turn != 'R_WINS' and game.turn != 'B_WINS' and game.turn != 'TIE':
 
         game.new_print_board()
 
-        if game.turn == 'B':
+        if game.turn == 'R':
             column = int(input('input a valid column \n'))
             game.drop_chip(column)
 

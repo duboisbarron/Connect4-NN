@@ -76,12 +76,6 @@ two_in_a_row_conditions = [
     [None, None, 'B', 'B'],
 ]
 
-better_two_in_a_row = [
-
-    ['R', 'R', None, None],
-    ['R']
-]
-
 
 '''
 Returns the number of 2 in a rows that can be converted into a win![

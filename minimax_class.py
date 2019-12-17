@@ -1,6 +1,5 @@
 from connect4 import Connect4
 from copy import deepcopy
-from new_heuristics import heuristic1
 
 
 class Minimax:
@@ -8,14 +7,12 @@ class Minimax:
     heuristic_function = None
     player_chip = None
 
-
     def __init__(self, maxdepth, heuristic_function, chip_color):
         self.maxdepth = maxdepth
         self.heuristic_function = heuristic_function
         self.player_chip = chip_color
         self.win_string = self.player_chip + '_WINS'
         self.lose_string = 'B_WINS' if self.player_chip == 'R' else 'R_WINS'
-
 
     def find_move(self, game):
         return self.minimax(game, self.maxdepth, True)
@@ -66,22 +63,3 @@ class Minimax:
                     value = value_this_move
                     best_move = valid_move
             return best_move, value
-
-
-
-# if __name__ == '__main__':
-#
-#     c1 = Connect4()
-#     mm_player = Minimax(3, heuristic1)
-#
-#
-#     c1.drop_chip(3)
-#     c1.new_print_board()
-#
-#     move, score = mm_player.find_move(c1)
-#     print(move, score)
-
-
-
-
-

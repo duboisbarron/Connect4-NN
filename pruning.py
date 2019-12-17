@@ -1,7 +1,7 @@
 from connect4 import Connect4
 from copy import deepcopy
 
-from new_heuristics import score_entire_board
+from heuristics_final import heuristic5
 import math
 
 
@@ -20,12 +20,12 @@ def score_board(game):
     if game.turn == tie:
         return 0
     elif game.turn == loss:
-        return -999999
+        return -math.inf
     elif game.turn == win:
-        return 999999
+        return math.inf
     else:
         # print('need to actually score the board')
-        return score_entire_board(game, game.turn)
+        return heuristic5(game, 'R')
 
 
 
@@ -34,26 +34,26 @@ def alpha_beta(depth, alpha, beta, maximizing_player, game):
     returns value and move to take for the alpha_beta pruning AI to take
     '''
 
-    print('making call to alpha beta')
-    print(depth)
+    # print('making call to alpha beta')
+    # print(depth)
     done = game.turn == 'B_WINS' or game.turn == 'R_WINS' or game.turn == 'TIE'
 
     if depth == 0 or done:
         # return the heuristic value of the the Leaf
         # TODO: ensure that the move here is correct
         # move = None
-        print('AT DEPTH 0')
-        return score_board(game), game.most_recent_move
+        # print('AT DEPTH 0')
+        return score_board(game), None
 
 
 
-    best_move = None
 
 
-    print('about to make recursive call ')
+    # print('about to make recursive call ')
 
     if maximizing_player:
-        value = -999999
+        value = -math.inf
+        best_move = 0
 
 
         #get the list of available moves
@@ -64,36 +64,22 @@ def alpha_beta(depth, alpha, beta, maximizing_player, game):
 
             #make copy of the game instance
             child_game.drop_chip(move_to_take)
-            score, potential_move = alpha_beta(depth-1, alpha, beta, False, child_game)
-
-
-            print('DONE WITH THE RECURSIVE CALLS')
-
-
-            game.new_print_board()
-
-            # value = max(of the current value and whatever alphabeta() returns
-            #replace the score
-
-            print(type(score))
-            print(score)
-
-
-
+            score = alpha_beta(depth-1, alpha, beta, False, child_game)[0]
 
             if score > value:
-                best_move = potential_move
+                best_move = move_to_take
                 value = score
 
             alpha = max(alpha, value)
-            if alpha > beta:
+            if alpha >= beta:
                 # cut B OFF
-                print("BREAKING")
+                # print("BREAKING")
                 break
         return value, best_move
 
     else:
-        value = 999999
+        value = math.inf
+        best_move = 0
 
         valid_moves = game.available_moves()
         for move_to_take in valid_moves:
@@ -105,16 +91,16 @@ def alpha_beta(depth, alpha, beta, maximizing_player, game):
 
             child_game.drop_chip(move_to_take)
 
-            score, potential_move = alpha_beta(depth - 1, alpha, beta, True, child_game)
+            score = alpha_beta(depth - 1, alpha, beta, True, child_game)[0]
 
             if score < value:
-                best_move = potential_move
+                best_move = move_to_take
                 value = score
 
             beta = min(beta, value)
 
-            if alpha > beta:
-                print('BREAKING')
+            if alpha >= beta:
+                # print('BREAKING')
                 break
         return value, best_move
 
@@ -167,10 +153,11 @@ def online_alpha_beta( game, depth, player, alpha, beta):
     return bestScore, bestMove
 
 
-def findMove( board):
+def findMove(board):
     # score, move = self.alphaBeta(board, self.depthLimit, self.isPlayerOne, -math.inf, math.inf)
 
-    score, move = online_alpha_beta(board, 5, True, -math.inf, math.inf)
+    # score, move = online_alpha_beta(board, 5, True, -math.inf, math.inf)
+    score, move = alpha_beta(5, -math.inf, math.inf, True, board)
     return score, move
 
 
@@ -189,9 +176,6 @@ def manage_AB_input(game):
 
 
     # if it is the first turn of the game, just go in column 0
-    if game.board == game.new_board():
-        game.drop_chip(0)
-        return
 
     # def alpha_beta(depth, alpha, beta, maximizing_player, game):
     optimal_value, optimal_move = findMove(game)
@@ -235,6 +219,7 @@ def run_pve():
 
 
     print(game.turn)
+    game.new_print_board()
 
 
 def test_ensures_block_move():

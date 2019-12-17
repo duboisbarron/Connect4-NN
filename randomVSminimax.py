@@ -35,7 +35,7 @@ while i < NUM_TRIALS:
         if c.turn == 'B':
             manage_ai_input(c)
         else:
-            minimax.manage_minimax_input(c, 2)
+            minimax.manage_minimax_input(c)
             # c.print_board()
 
     # print("GAME IS OVER")

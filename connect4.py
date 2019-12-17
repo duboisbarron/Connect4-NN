@@ -17,15 +17,18 @@ class Connect4:
     total_moves = 0
 
 
-    def __init__(self, board=None, turn=None, last_move=None):
+    def __init__(self, board=None, turn=None, last_move=None, total_moves=0):
 
         if board is None and turn is None and last_move is None:
             self.last_move = last_move
             self.board = self.new_board()
             self.turn = "B" if randint(0, 1) else "R"
+            self.total_moves = 0
         else:
             self.board = board
             self.turn = turn
+            self.last_move = last_move
+            self.total_moves = total_moves
 
     def __deepcopy__(self, memodict={}):
         return Connect4(self.board, self.turn)
@@ -100,17 +103,19 @@ class Connect4:
         # print('calling is tie')
         # everything will be true
         # if total length of all the arrays is 7*6 then it's a tie
-        if self.total_moves == 44:
+        # print(self.total_moves)
+
+        if self.total_moves == 42:
             return True
-        return False
-        # x = True
-        # for col in range(self.columns-1):
-        #     # print(col)
-        #     if not self.is_column_full(col):
-        #         x = False
-        #         break
-        #
-        # return x
+
+        # column_fulls = [self.is_column_full(col) for col in range(self.columns)]
+        # print(column_fulls)
+        # if False in column_fulls:
+        #     return False
+        # else:
+        #     return True
+
+
 
             # check if every single column is full... do this after you check for win conditions since the checks happen within drop_chip
 
@@ -166,11 +171,21 @@ class Connect4:
     # return True if column col is full, False otherwise
     # list.index(el) throws ValueError if el not in list
     def is_column_full(self, col):
-        try:
-            x = self.board[col].index(None)
-        except ValueError:
-            x = -1
-        return x == -1
+        full_column = self.board[col]
+
+        is_full = True
+
+        for elt in full_column:
+            if elt is None:
+                is_full = False
+                break
+        return is_full
+
+        # try:
+        #     x = self.board[col].index(None)
+        # except ValueError:
+        #     x = -1
+        # return x == -1
 
     def available_moves(self):
         """
@@ -380,11 +395,40 @@ def test_diagonal_forward():
     print(c1.turn)
     c1.print_board()
 
+
+def test_is_column_full():
+    game = Connect4()
+    for x in range(6):
+        game.drop_chip(0)
+
+    for x in range(6):
+        game.drop_chip(1)
+
+    for x in range(6):
+        game.drop_chip(2)
+
+    for x in range(6):
+        game.drop_chip(3)
+
+    for x in range(6):
+        game.drop_chip(4)
+
+    for x in range(6):
+        game.drop_chip(5)
+
+    for x in range(6):
+        game.drop_chip(6)
+
+    # print(game.is_column_full(0))
+    print(game.turn)
+
 if __name__ == '__main__':
     # test_diagonal_forward()
-    test_diagonal_backwards()
-    test_diagonal_forward()
-    print('finished testing')
+    # test_diagonal_backwards()
+    # test_diagonal_forward()
+    # print('finished testing')
+
+    test_is_column_full()
 
 
 

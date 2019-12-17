@@ -38,12 +38,12 @@ def ai_vs_ai():
         game.new_print_board()
 
         if game.turn == 'R':
-            move, score = mm_player_red.find_move(game)
+            score, move = mm_player_red.find_move(game)
             game.drop_chip(move)
             # game.new_print_board()
 
         else:
-            move, score = mm_player_blue.find_move(game)
+            score, move = mm_player_blue.find_move(game)
             game.drop_chip(move)
             # game.new_print_board()
 

@@ -1,6 +1,7 @@
 from connect4 import Connect4
 from minimax_class import Minimax
 from random import randint
+from alpha_beta_class import AlphaBeta
 import time
 import matplotlib.pyplot as plt
 
@@ -238,12 +239,11 @@ def drop_20_chips():
 
 
 
-
-def record_time(mmObj, game):
+def record_time(AIobj, game):
     # print('recording time')
     current_time = time.time()
 
-    mmObj.find_move(game)
+    AIobj.find_move(game)
 
     elapsed_time = time.time() - current_time
     return elapsed_time
@@ -330,15 +330,132 @@ def compare_depth_times():
     plt.show()
 
 
+'''
+Records running time of heuristic 5 on 20 random boards for various max depths
+'''
+def compare_depth_times_ab():
+    mm_1 = AlphaBeta(1, heuristic5, 'R')
+    mm_2 = AlphaBeta(2, heuristic5, 'R')
+    mm_3 = AlphaBeta(3, heuristic5, 'R')
+    mm_4 = AlphaBeta(4, heuristic5, 'R')
+    mm_5 = AlphaBeta(5, heuristic5, 'R')
+    mm_6 = AlphaBeta(6, heuristic5, 'R')
+
+    num_games = 10
+
+    twenty_random_games = [drop_20_chips() for x in range(num_games)]
+    mm_1_average_time = sum([record_time(mm_1, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 1')
+    mm_2_average_time = sum([record_time(mm_2, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 2')
+
+    mm_3_average_time = sum([record_time(mm_3, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 3')
+
+    mm_4_average_time = sum([record_time(mm_4, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 4')
+
+
+    mm_5_average_time = sum([record_time(mm_5, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 5')
+
+    mm_6_average_time = sum([record_time(mm_6, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 6')
+
+
+    x_vals = [1, 2, 3, 4, 5, 6]
+    y_vals = [mm_1_average_time, mm_2_average_time, mm_3_average_time, mm_4_average_time, mm_5_average_time, mm_6_average_time]
+
+    plt.plot(x_vals, y_vals)
+    plt.xticks([1, 2, 3, 4, 5, 6], ('1', '2', '3', '4', '5', '6'))
+    plt.ylabel('Average Running Time of Heuristic 5')
+    plt.xlabel('Alpha Beta Max Depth')
+    plt.title('Recording Heuristic 5 Run Time on 20 Random Games at Various Max Depths')
+    plt.show()
+
+def compare_mm_to_ab():
+
+    num_games = 10
+
+    twenty_random_games = [drop_20_chips() for x in range(num_games)]
+
+    ab_1 = AlphaBeta(1, heuristic5, 'R')
+    ab_2 = AlphaBeta(2, heuristic5, 'R')
+    ab_3 = AlphaBeta(3, heuristic5, 'R')
+    ab_4 = AlphaBeta(4, heuristic5, 'R')
+    ab_5 = AlphaBeta(5, heuristic5, 'R')
+    ab_6 = AlphaBeta(6, heuristic5, 'R')
+
+    mm_1 = Minimax(1, heuristic5, 'R')
+    mm_2 = Minimax(2, heuristic5, 'R')
+    mm_3 = Minimax(3, heuristic5, 'R')
+    mm_4 = Minimax(4, heuristic5, 'R')
+    mm_5 = Minimax(5, heuristic5, 'R')
+    mm_6 = Minimax(6, heuristic5, 'R')
+
+
+
+    ab_1_average_time = sum([record_time(ab_1, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 1')
+    ab_2_average_time = sum([record_time(ab_2, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 2')
+    ab_3_average_time = sum([record_time(ab_3, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 3')
+    ab_4_average_time = sum([record_time(ab_4, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 4')
+    ab_5_average_time = sum([record_time(ab_5, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 5')
+    ab_6_average_time = sum([record_time(ab_6, game) for game in twenty_random_games]) / float(num_games)
+    print('finished ab')
+
+
+
+
+    mm_1_average_time = sum([record_time(mm_1, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 1')
+    mm_2_average_time = sum([record_time(mm_2, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 2')
+    mm_3_average_time = sum([record_time(mm_3, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 3')
+    mm_4_average_time = sum([record_time(mm_4, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 4')
+    mm_5_average_time = sum([record_time(mm_5, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 5')
+    mm_6_average_time = sum([record_time(mm_6, game) for game in twenty_random_games]) / float(num_games)
+    print('done depth 6')
+
+
+    x_vals = [1, 2, 3, 4, 5, 6]
+    y_vals = [ab_1_average_time, ab_2_average_time, ab_3_average_time, ab_4_average_time, ab_5_average_time, ab_6_average_time]
+    y_vals_mm = [mm_1_average_time, mm_2_average_time, mm_3_average_time, mm_4_average_time, mm_5_average_time, mm_6_average_time]
+
+
+
+    plt.plot(x_vals, y_vals, label='Alpha Beta', color='orange')
+    plt.plot(x_vals, y_vals_mm, label='Minimax', color='blue')
+    plt.legend()
+    plt.xticks([1, 2, 3, 4, 5, 6], ('1', '2', '3', '4', '5', '6'))
+    plt.ylabel('Average Running Time of Finding Move')
+    plt.xlabel('Max Depth')
+    plt.title('Comparing Alpha Beta to Minimax Runtime')
+    plt.show()
+
+
+
 
 if __name__ == '__main__':
 
+    print('look at function calls below')
     # game = drop_20_chips()
     # game.new_print_board()
     # print(game.turn)
-    compare_heuristics()
+    # compare_heuristics()
 
     # compare_depth_times()
+
+    # compare_depth_times_ab()
+
+    # compare_mm_to_ab()
 
 
 

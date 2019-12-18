@@ -25,6 +25,8 @@ play_ab - run to play a human vs alpha beta game
 
 play_mm - run to play a human vs minimax game
 
+play_nn - run to play a human vs neural network game
+
 pruning - original file holding alpha beta pruning implementation 
 
 random_vs_ab - run to simulate a game between random ai and the alpha beta pruning algorithm

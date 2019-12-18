@@ -33,6 +33,10 @@ class Connect4:
             self.total_moves = 0
 
         else:
+             #for saving each round
+            self.black_round = 0
+            self.red_round = 0
+            self.first = self.turn 
             self.board = board
             self.turn = turn
             self.last_move = last_move
@@ -218,7 +222,7 @@ class Connect4:
             self.red_round += 1    
         #end of saving states
 
-        print(self.board)
+        # print(self.board)
         self.most_recent_move = col
         # self.total_moves += 1
         return self.rows - index -1, col

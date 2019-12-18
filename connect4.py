@@ -1,4 +1,6 @@
 # packages for
+import numpy as np
+from time import time
 from colorama import Fore, Back, Style, init
 from random import randint
 init()
@@ -23,12 +25,28 @@ class Connect4:
             self.last_move = last_move
             self.board = self.new_board()
             self.turn = "B" if randint(0, 1) else "R"
+            #for saving each round
+            self.black_round = 0
+            self.red_round = 0
+            self.first = self.turn 
+
             self.total_moves = 0
+
         else:
             self.board = board
             self.turn = turn
             self.last_move = last_move
             self.total_moves = total_moves
+
+        #creating file name for black states 
+        time_str = (str(time()))
+        self.filename_black = ('./black_games/' 
+        + (time_str)
+        + '.npy')
+        #creating file for red states
+        self.filename_red = ('./red_games/' 
+        + (time_str)
+        + '.npy')
 
     def __deepcopy__(self, memodict={}):
         return Connect4(self.board, self.turn)
@@ -38,6 +56,12 @@ class Connect4:
 
     def new_board(self):
         return [self.make_column() for i in range(self.columns)]
+    
+    def get_board(self):
+        return self.board
+    
+    def get_turn(self):
+        return self.turn 
 
     def get_col(self, col):
         return self.board[col]
@@ -134,7 +158,6 @@ class Connect4:
         # just have a list that you append to in drop_chip
         # only print_board is what really matters to a human
         # if everything else works it's much more memory efficient - wider loops
-
         col_to_drop_in = self.board[col]
         col_to_drop_in.reverse()
         index = 0
@@ -159,6 +182,43 @@ class Connect4:
         else:
             self.flip_turn()
 
+        #saving the states of each game 
+        state = np.array(np.transpose(self.board))
+        if self.black_round == 0: 
+            current_board = np.zeros((30,6,7))
+            np.save(self.filename_black, current_board)
+        if self.red_round == 0:
+            game_history = np.zeros((30,6,7))
+            np.save(self.filename_red, game_history)
+        if self.black_round == 0 and self.first == "B":
+            self.black_round += 1
+        if self.red_round == 0 and self.first == "R":
+            self.red_round += 1 
+        else:
+            current_board = np.load(self.filename_black)
+            game_history = np.load(self.filename_red)
+
+        if self.turn == "B":
+            for row in range(6):
+                for col in range(7):
+                    if state[row][col] == "B":
+                        current_board[self.black_round][row][col] = 1
+                    elif state[row][col] == "R":
+                        current_board[self.black_round][row][col] = -1
+            np.save(self.filename_black, current_board)
+            self.black_round += 1
+        elif self.turn == "R":
+            for row in range(6):
+                for col in range(7):
+                    if state[row][col] == "R":
+                        game_history[self.red_round][row][col] = 1
+                    elif state[row][col] == "B":
+                        game_history[self.red_round][row][col] = -1     
+            np.save(self.filename_red, game_history) 
+            self.red_round += 1    
+        #end of saving states
+
+        print(self.board)
         self.most_recent_move = col
         # self.total_moves += 1
         return self.rows - index -1, col

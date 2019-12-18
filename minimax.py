@@ -132,18 +132,18 @@ def score_board(game):
     # game.print_board()
     # print(game.last_move)
 
-    print('current turn is: ' + game.turn)
+    # print('current turn is: ' + game.turn)
     if game.turn == 'B':
 
-        print('finding number of twos that ' + game.turn + ' can make')
-        print(game.turn)
+        # print('finding number of twos that ' + game.turn + ' can make')
+        # print(game.turn)
         twos = score_entire_board(game, 'B')
-        print('found this many potential 2 in a rows for red this game: ' + str(twos))
+        # print('found this many potential 2 in a rows for red this game: ' + str(twos))
         if twos != 0:
-            game.print_board()
+            game.new_print_board()
         return twos
     else:
-        print('')
+        # print('')
         return score_entire_board(game, 'R')
 
 def minimax(game, depth, maximizingPlayer):
@@ -167,8 +167,8 @@ def minimax(game, depth, maximizingPlayer):
 
             board_score = score_board(game)
 
-            print(board_score)
-            print('score of this board is: ' + str(board_score))
+            # print(board_score)
+            # print('score of this board is: ' + str(board_score))
             return None, board_score
 
     if maximizingPlayer:
@@ -182,20 +182,20 @@ def minimax(game, depth, maximizingPlayer):
 
 
             last_move = child_game.drop_chip(valid_move)
-            print('printing child game turn ')
-            print(child_game.turn)
-            print(child_game.turn)
-            print(child_game.turn)
-            print(child_game.turn)
-            print(child_game.turn)
-            print(child_game.turn)
-            print(child_game.turn)
+            # print('printing child game turn ')
+            # print(child_game.turn)
+            # print(child_game.turn)
+            # print(child_game.turn)
+            # print(child_game.turn)
+            # print(child_game.turn)
+            # print(child_game.turn)
+            # print(child_game.turn)
             value_this_move = minimax(child_game, depth-1, not maximizingPlayer)[1]
 
             if value_this_move == -1:
-                print("HELLO THERE LOOK AT ME!!!!")
-                print("GAME IS CURRENTLY AT THIS STATE AND WE ARE MAXIMIZING THIS PLAYER")
-                game.print_board()
+                # print("HELLO THERE LOOK AT ME!!!!")
+                # print("GAME IS CURRENTLY AT THIS STATE AND WE ARE MAXIMIZING THIS PLAYER")
+                game.new_print_board()
             if value_this_move > value:
                 value = value_this_move
                 best_move = valid_move
@@ -212,20 +212,15 @@ def minimax(game, depth, maximizingPlayer):
 
 
             last_move = child_game.drop_chip(valid_move)
-            print('printing turn from the minimizing player!!')
-            print(child_game.turn)
+            # print('printing turn from the minimizing player!!')
+            # print(child_game.turn)
             value_this_move = minimax(child_game, depth-1, not maximizingPlayer)[1]
 
 
-
-            if value_this_move == -1:
-                print('we are minimzing in this state')
-
-
-            print('comparing: ' + str(value_this_move) + ' to: ' + str(value))
+            # print('comparing: ' + str(value_this_move) + ' to: ' + str(value))
             if value_this_move < value:
-                print('found a new minimum value')
-                print(value, best_move)
+                # print('found a new minimum value')
+                # print(value, best_move)
                 value = value_this_move
                 best_move = valid_move
         return best_move, value
@@ -237,7 +232,7 @@ def manage_input(c):
         if (int(x) in range(c.columns)) and (not c.is_column_full(int(x))):
 
             c.drop_chip(int(x))
-            c.print_board()
+            c.new_print_board()
         else:
             print("invalid input")
             return False
@@ -251,31 +246,15 @@ def manage_minimax_input(game):
         if the AI moves first, just go in the middle
     '''
     if game.board == game.new_board():
-        print("AI IS GOING FIRST")
+        # print("AI IS GOING FIRST")
         game.drop_chip(0)
-        game.print_board()
+        game.new_print_board()
     else:
-        '''
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        HERE
-        
-        '''
+
         best_move, value = minimax(game, 4, True)
-        print('best move is : ' + str((best_move, value)))
+        # print('best move is : ' + str((best_move, value)))
         game.drop_chip(best_move)
-        game.print_board()
+        game.new_print_board()
 
     # best_move = minimax(game, 2, True, None)
     # print(best_move)
@@ -286,7 +265,7 @@ def runPVE():
         print("playing game")
 
         c = Connect4()
-        c.print_board()
+        c.new_print_board()
 
         # human is always blue
         human = "B"

@@ -127,6 +127,8 @@ def score_entire_board(game, player):
     blue_threes_that_can_win = 0
     red_threes_that_can_win = 0
 
+    indexed_chips = []
+
     for row in range(game.rows):
         for col in range(game.columns):
 
@@ -142,13 +144,16 @@ def score_entire_board(game, player):
                 red_threes_that_can_win += count_3s_that_can_win(game, (row, col))
 
 
-    print('R_2s, R_3s, B_2s, B_3s')
-    print(red_twos_that_can_win, red_threes_that_can_win, blue_twos_that_can_win, blue_threes_that_can_win)
+    # print('R_2s, R_3s, B_2s, B_3s')
+    # print(red_twos_that_can_win, red_threes_that_can_win, blue_twos_that_can_win, blue_threes_that_can_win)
     if player == 'R':
         return 10 * (red_threes_that_can_win - blue_threes_that_can_win) + 1 * (red_twos_that_can_win - blue_twos_that_can_win)
     else:
         return 10*(blue_threes_that_can_win - red_threes_that_can_win) + 1*(blue_twos_that_can_win - red_twos_that_can_win)
 
+
+def heuristic1(game, player):
+    return score_entire_board(game, player)
 
 
 def test_score_board():
@@ -159,8 +164,8 @@ def test_score_board():
     game.drop_chip(3)
     game.drop_chip(0)
     game.drop_chip(3)
-    game.drop_chip(0)
-    game.drop_chip(3)
+    # game.drop_chip(0)
+    # game.drop_chip(3)
     game.new_print_board()
     print('Score for Player: ' + chip + ' is: ' + str(score_entire_board(game, chip)))
     print('Score for Player: ' + opposite_chip + ' is: ' + str(score_entire_board(game, opposite_chip)))

@@ -5,7 +5,7 @@ import time
 # play the random ai against another random ai and print the board after each move
 
 # do this 10 times and record the number of times blue won and the number of times red won
-NUM_TRIALS = 10
+NUM_TRIALS = 1000
 
 # define the AIs and the number of total wins
 AI1 = "B"

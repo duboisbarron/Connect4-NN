@@ -204,6 +204,7 @@ class Connect4:
             self.red_round += 1    
         #end of saving states
 
+        print(self.board)
         self.most_recent_move = col
         return self.rows - index -1, col
 

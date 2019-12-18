@@ -27,6 +27,8 @@ play_mm - run to play a human vs minimax game
 
 pruning - original file holding alpha beta pruning implementation 
 
+random_vs_ab - run to simulate a game between random ai and the alpha beta pruning algorithm
+
 randomAI - run to play human vs random ai 
 
 randomVSminimax - run to watch minimax defeat random ai 100 times (minimax is red)

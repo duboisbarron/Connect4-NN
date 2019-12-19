@@ -3,6 +3,7 @@ import numpy as np
 from time import time
 from colorama import Fore, Back, Style, init
 from random import randint
+from sty import fg, bg, ef, rs
 init()
 # print(Fore.RED + 'hello')
 
@@ -78,6 +79,9 @@ class Connect4:
 
     def new_print_board(self):
         from termcolor import colored, cprint
+        if (self.total_moves == 0):
+            cprint("Hello! Welcome to Connect Four!", color='red', on_color=None, attrs=['bold'])
+            cprint("Choose a valid move to begin playing", color='red', on_color=None, attrs=['blink'])
         # print('Hello There welcome to the board printing function')
 
         # cprint('Hello, World!', 'green', 'on_red', end='')
@@ -86,26 +90,33 @@ class Connect4:
 
         # print(chr(175) + chr(175) + chr(175) + chr(175) + chr(175) + chr(175) + chr(175) + chr(175))
         for i in range(len(board[0])):
-            print('|', end='')
+            cprint('|', 'white', 'on_cyan', end='')
             # row_string = "|"
             for j in range(len(board)):
                 if board[j][i] is None:
                     # print('FOUND A  NULL')
-                    print(' |', end='')
+                    cprint('  |', 'white', 'on_cyan', end='')
                     # row_string += " |"
                 else:
                     # print(board[j][i])
                     # print blue chip
                     chip = board[j][i]
-                    cprint(board[j][i], 'grey', 'on_blue' if chip == 'B' else 'on_red', end='')
-                    print('|', end='')
-
+                    red_circle = u"\U0001F534"
+                    blue_circle = u"\U0001F535"
+                    if (chip == 'R'):
+                        choose = red_circle
+                    else:
+                        choose = blue_circle
+                    cprint(choose, 'white', 'on_cyan',end='') # 'grey', 'on_blue' if chip == 'B' else 'on_red'
+                    cprint('|', 'white', 'on_cyan', end='')
             print()
             # row_string += board[j][i] + "|"
             # print(row_string)
 
             # self.prCyan(row_string)
-        print(' 0 1 2 3 4 5 6')
+        cprint('  0  1  2  3  4  5  6')
+        print()
+
         # print('Goodbye from the board printing function')
 
     def print_board(self):
@@ -253,7 +264,6 @@ class Connect4:
 
     def available_moves(self):
         """
-
         :return: returns the list of valid column indices one may drop a chip into
         """
         moves = [col for col in range(self.columns) if not self.is_column_full(col)]
@@ -510,5 +520,3 @@ if __name__ == '__main__':
 # print(p1.get_forward_diag(5, 0))
 
 # p1.print_board()
-
-

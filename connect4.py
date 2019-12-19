@@ -102,11 +102,11 @@ class Connect4:
                     # print blue chip
                     chip = board[j][i]
                     red_circle = u"\U0001F534"
-                    blue_circle = u"\U0001F535"
+                    black_circle = u"\U000026AB"
                     if (chip == 'R'):
                         choose = red_circle
                     else:
-                        choose = blue_circle
+                        choose = black_circle
                     cprint(choose, 'white', 'on_cyan',end='') # 'grey', 'on_blue' if chip == 'B' else 'on_red'
                     cprint('|', 'white', 'on_cyan', end='')
             print()
